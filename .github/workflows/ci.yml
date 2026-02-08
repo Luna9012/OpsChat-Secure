@@ -1,0 +1,98 @@
+name: OpsChat CI
+
+# Trigger: Run on push to main or pull requests
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  # JOB 1: Test the Backend
+  backend-test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+
+    # Service Containers: Spin up fake DB/Redis for the duration of the test
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: password123
+          POSTGRES_DB: opschat
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    steps:
+      # 1. Download your code
+      - uses: actions/checkout@v4
+
+      # 2. Install Node.js
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "./opschat-backend/package-lock.json"
+
+      # 3. Install Backend Libraries
+      - name: Install Dependencies
+        working-directory: ./opschat-backend
+        run: npm ci
+
+      # 4. Generate Prisma Client & Run Migrations
+      - name: Setup Database
+        working-directory: ./opschat-backend
+        env:
+          DATABASE_URL: "postgresql://admin:password123@localhost:5432/opschat"
+        run: |
+          npx prisma generate
+          npx prisma migrate deploy
+
+      # 5. Run the Tests
+      - name: Run Backend Tests
+        working-directory: ./opschat-backend
+        env:
+          # These match the 'services' block above
+          DATABASE_URL: "postgresql://admin:password123@localhost:5432/opschat"
+          REDIS_HOST: "localhost"
+          REDIS_PORT: "6379"
+          JWT_SECRET: "test-secret-key"
+          PORT: 3000
+        run: npm test
+
+  # JOB 2: Build the Frontend (Ensure no syntax errors)
+  frontend-build:
+    name: Frontend Build Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "./opschat-frontend/package-lock.json"
+
+      - name: Install Dependencies
+        working-directory: ./opschat-frontend
+        run: npm ci
+
+      - name: Build Frontend
+        working-directory: ./opschat-frontend
+        env:
+          VITE_API_URL: "http://localhost:3000"
+        run: npm run build
