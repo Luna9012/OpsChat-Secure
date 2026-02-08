@@ -69,6 +69,7 @@ jobs:
           REDIS_HOST: "localhost"
           REDIS_PORT: "6379"
           JWT_SECRET: "test-secret-key"
+          GROQ_API_KEY: "dummy_key_for_testing"
           PORT: 3000
         run: npm test
 
