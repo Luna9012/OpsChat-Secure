@@ -1,18 +1,28 @@
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const { authenticateToken } = require('../middleware/authMiddleware');
 
-// Get current user's profile
-// GET /api/users/profile
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed'), false);
+        }
+    }
+});
+
+
 router.get('/profile', authenticateToken, userController.getProfile);
 
-// Update current user's profile
-// PUT /api/users/profile
 router.put('/profile', authenticateToken, userController.updateProfile);
 
-// Get any user's public profile by ID
-// GET /api/users/:userId
+router.post('/upload-avatar', authenticateToken, upload.single('avatar'), userController.uploadAvatar);
+
 router.get('/:userId', authenticateToken, userController.getUserById);
 
 module.exports = router;

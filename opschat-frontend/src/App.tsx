@@ -2,7 +2,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
-// Import Pages
 import { Navbar } from './components/layout/Navbar';
 import { Hero } from './components/sections/Hero';
 import { LogoMarquee } from './components/sections/LogoMarquee';
@@ -11,14 +10,12 @@ import { Benefits } from './components/sections/Benefits';
 import { OrbitFeatures } from './components/sections/OrbitFeatures';
 import { Footer } from './components/layout/Footer';
 
-// Auth & Dashboard Imports
 import { AuthPage } from './components/auth/AuthPage';
 import { ProfileSetup } from './components/auth/ProfileSetup';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { pageTransition } from './utils/animations';
 import { ThemeProvider } from './hooks/useTheme.tsx';
 
-// Landing Page Assembly
 const LandingPage = () => (
   <motion.div initial="initial" animate="animate" exit="exit" variants={pageTransition}>
     <Navbar />
@@ -31,7 +28,6 @@ const LandingPage = () => (
   </motion.div>
 );
 
-// Wrapper for Animation Presence
 const AnimatedRoutes = () => {
   const location = useLocation();
 

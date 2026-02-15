@@ -42,7 +42,7 @@ const setupSocketHandlers = (io) => {
                         orderBy: { createdAt: 'asc' },
                         take: 50,
                         include: {
-                            sender: { select: { id: true, username: true } }
+                            sender: { select: { id: true, username: true, avatar: true, avatarColor: true } }
                         }
                     });
 
@@ -50,6 +50,8 @@ const setupSocketHandlers = (io) => {
                         id: msg.id.toString(),
                         userId: msg.senderId,
                         author: msg.sender?.username || 'Unknown',
+                        avatar: msg.sender?.avatar || null,
+                        avatarColor: msg.sender?.avatarColor || null,
                         message: msg.content,
                         type: msg.type || 'text',
                         time: new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -91,6 +93,8 @@ const setupSocketHandlers = (io) => {
                         channelId: msg.channelId,
                         userId: msg.userId,
                         author: msg.author || msg.user?.username || "Unknown",
+                        avatar: msg.user?.avatar || null,
+                        avatarColor: msg.user?.avatarColor || null,
                         message: msg.content,
                         type: msg.type || 'text',
                         time: new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -127,7 +131,7 @@ const setupSocketHandlers = (io) => {
                             receiverId: parseInt(receiverId)
                         },
                         include: {
-                            sender: { select: { username: true } }
+                            sender: { select: { username: true, avatar: true, avatarColor: true } }
                         }
                     });
 
@@ -136,6 +140,8 @@ const setupSocketHandlers = (io) => {
                         id: savedDM.id.toString(),
                         message: message,
                         author: savedDM.sender?.username || author,
+                        avatar: savedDM.sender?.avatar || null,
+                        avatarColor: savedDM.sender?.avatarColor || null,
                         userId: currentUserId,
                         type: type || 'text',
                         receiverId: receiverId,
@@ -181,11 +187,19 @@ const setupSocketHandlers = (io) => {
 
                 const roomName = `channel_${channel.id}`;
 
+                // Get sender's avatar info
+                const senderUser = data.userId ? await prisma.user.findUnique({
+                    where: { id: parseInt(data.userId) },
+                    select: { avatar: true, avatarColor: true }
+                }) : null;
+
                 // Broadcast to channel room
                 io.to(roomName).emit('receive_message', {
                     id: savedMessage.id.toString(),
                     message: message,
                     author: author,
+                    avatar: senderUser?.avatar || null,
+                    avatarColor: senderUser?.avatarColor || null,
                     userId: savedMessage.userId,
                     type: type || 'text',
                     channelId: channel.id,

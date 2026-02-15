@@ -11,7 +11,6 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
     const modalRef = useRef<HTMLDivElement>(null);
 
-    // Close on escape key
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
@@ -20,7 +19,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
         return () => document.removeEventListener('keydown', handleEscape);
     }, [onClose]);
 
-    // Close on click outside
     const handleBackdropClick = (e: React.MouseEvent) => {
         if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
             onClose();
@@ -36,9 +34,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
         >
             <div
                 ref={modalRef}
-                className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-800 transform transition-all animate-in zoom-in-95 duration-200"
+                className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-800 transform transition-all animate-in zoom-in-95 duration-200"
             >
-                
+
                 <div className="flex items-center justify-between p-6 pb-2">
                     <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                         {title}
@@ -51,7 +49,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
                     </button>
                 </div>
 
-                
+
                 <div className="p-6 pt-4">
                     {children}
                 </div>

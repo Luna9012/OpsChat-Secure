@@ -7,7 +7,6 @@ import {
 import { ThemeToggle } from '../ui/ThemeToggle';
 import type { User, Workspace, ViewState } from '../../types';
 
-// Import Modals
 import CreateChannelModal from '../channels/CreateChannelModal';
 import JoinChannelModal from '../channels/JoinChannelModal';
 import EditChannelModal from '../channels/EditChannelModal';
@@ -71,18 +70,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <div className="flex items-center justify-between px-2 mb-3">
                             <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Channels</p>
                             <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => setShowJoinModal(true)}
-                                    className="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
-                                    title="Join via Code"
-                                >
+                                <button onClick={() => setShowJoinModal(true)} className="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" title="Join via Code">
                                     <Key className="w-3 h-3" />
                                 </button>
-                                <button
-                                    onClick={() => setShowCreateModal(true)}
-                                    className="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
-                                    title="Create Channel"
-                                >
+                                <button onClick={() => setShowCreateModal(true)} className="text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" title="Create Channel">
                                     <Plus className="w-3 h-3" />
                                 </button>
                             </div>
@@ -97,16 +88,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                         }`}
                                     onClick={() => setActiveView({ type: 'channel', id: channel.id })}
                                 >
-                                    <Hash className={`w-4 h-4 flex-shrink-0 ${activeView.type === 'channel' && activeView.id === channel.id
-                                        ? 'text-slate-900 dark:text-white'
-                                        : 'text-slate-300 dark:text-slate-600'
-                                        }`} />
+                                    <Hash className={`w-4 h-4 flex-shrink-0 ${activeView.type === 'channel' && activeView.id === channel.id ? 'text-slate-900 dark:text-white' : 'text-slate-300 dark:text-slate-600'}`} />
                                     <span className="flex-1 truncate">{channel.name}</span>
                                     <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleEditChannel(channel);
-                                        }}
+                                        onClick={(e) => { e.stopPropagation(); handleEditChannel(channel); }}
                                         className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-md transition-all"
                                     >
                                         <MoreHorizontal className="w-3 h-3" />
@@ -116,29 +101,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         </div>
                     </div>
 
-                    {/* Add Person Section - Always visible */}
                     <div>
                         <div className="flex items-center justify-between px-2 mb-3">
                             <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Connections</p>
                         </div>
-                        <button
-                            onClick={onAddPerson}
-                            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-bold text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300 transition-all border border-dashed border-slate-200 dark:border-slate-700"
-                        >
+                        <button onClick={onAddPerson} className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-bold text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300 transition-all border border-dashed border-slate-200 dark:border-slate-700">
                             <UserPlus className="w-4 h-4" />
                             <span>Send Friend Request</span>
                         </button>
                     </div>
 
-                    {/* Friends Section - Only show if there are friends */}
                     {directMessages.length > 0 && (
                         <div>
                             <div className="flex items-center justify-between px-2 mb-3">
                                 <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Friends</p>
-                                <button
-                                    onClick={onAddPerson}
-                                    className="w-5 h-5 bg-slate-50 dark:bg-slate-700 rounded-md flex items-center justify-center text-slate-400 dark:text-slate-500 hover:bg-[#b5f2a1] hover:text-black transition-all"
-                                >
+                                <button onClick={onAddPerson} className="w-5 h-5 bg-slate-50 dark:bg-slate-700 rounded-md flex items-center justify-center text-slate-400 dark:text-slate-500 hover:bg-[#b5f2a1] hover:text-black transition-all">
                                     <UserPlus className="w-3 h-3" />
                                 </button>
                             </div>
@@ -147,14 +124,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                     <div
                                         key={user.id}
                                         onClick={() => setActiveView({ type: 'dm', id: user.id })}
-                                        className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer group transition-all ${activeView.type === 'dm' && activeView.id === user.id
-                                            ? 'bg-slate-50 dark:bg-slate-700'
-                                            : 'hover:bg-slate-50/50 dark:hover:bg-slate-700/50'
-                                            }`}
+                                        className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer group transition-all ${activeView.type === 'dm' && activeView.id === user.id ? 'bg-slate-50 dark:bg-slate-700' : 'hover:bg-slate-50/50 dark:hover:bg-slate-700/50'}`}
                                     >
                                         <div className="relative">
-                                            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-600 flex items-center justify-center text-[10px] font-bold text-slate-400 dark:text-slate-300 group-hover:bg-[#b5f2a1] group-hover:text-black transition-colors">
-                                                {user.username?.charAt(0).toUpperCase() || 'U'}
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm overflow-hidden transition-all ${user.avatar ? '' : (user.avatarColor || 'bg-slate-100 dark:bg-slate-600')} ${user.avatar ? '' : 'text-slate-400 dark:text-slate-300 group-hover:text-black'}`}>
+                                                {user.avatar ? (
+                                                    <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    user.username?.charAt(0).toUpperCase() || 'U'
+                                                )}
                                             </div>
                                             <div className="absolute bottom-0 right-0 w-2 h-2 rounded-full border-2 border-white dark:border-slate-800 bg-green-500" />
                                         </div>
@@ -171,14 +149,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 <div className="p-6 border-t border-slate-50 dark:border-slate-700">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 rounded-full bg-[#b5f2a1] flex items-center justify-center font-black text-slate-900 shadow-sm">
-                            {userProfile.username[0]?.toUpperCase()}
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black shadow-sm overflow-hidden ${userProfile.avatar ? '' : (userProfile.avatarColor || 'bg-[#b5f2a1]')} ${userProfile.avatar ? '' : 'text-slate-900'}`}>
+                            {userProfile.avatar ? (
+                                <img src={userProfile.avatar} alt="Me" className="w-full h-full object-cover" />
+                            ) : (
+                                userProfile.username[0]?.toUpperCase()
+                            )}
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-xs font-bold text-slate-900 dark:text-white">{userProfile.username}</p>
-                            <p className="text-[9px] font-bold text-green-500 truncate">
-                                {userProfile.status || "Set your status..."}
-                            </p>
+                            <p className="text-[9px] font-bold text-green-500 truncate">{userProfile.status || "Set your status..."}</p>
                         </div>
                         <button onClick={onLogout} className="text-slate-300 dark:text-slate-500 hover:text-red-500 transition-colors">
                             <LogOut className="w-4 h-4" />
@@ -187,25 +167,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
             </aside>
 
-            <CreateChannelModal
-                isOpen={showCreateModal}
-                onClose={() => setShowCreateModal(false)}
-                workspaceId={currentWorkspace.id.toString()}
-                onSuccess={onRefresh}
-            />
-
-            <JoinChannelModal
-                isOpen={showJoinModal}
-                onClose={() => setShowJoinModal(false)}
-                onSuccess={onRefresh}
-            />
-
+            <CreateChannelModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} workspaceId={currentWorkspace.id.toString()} onSuccess={onRefresh} />
+            <JoinChannelModal isOpen={showJoinModal} onClose={() => setShowJoinModal(false)} onSuccess={onRefresh} />
             <EditChannelModal
                 isOpen={showEditModal}
-                onClose={() => {
-                    setShowEditModal(false);
-                    setSelectedChannel(null);
-                }}
+                onClose={() => { setShowEditModal(false); setSelectedChannel(null); }}
                 channel={selectedChannel}
                 onSuccess={onRefresh}
             />

@@ -1,4 +1,6 @@
 const prisma = require('../config/database');
+const { s3Client, PutObjectCommand, BUCKET_NAME } = require('../config/s3');
+const crypto = require('crypto');
 
 // Get current user profile
 const getProfile = async (req, res) => {
@@ -15,6 +17,7 @@ const getProfile = async (req, res) => {
                 status: true,
                 bio: true,
                 avatar: true,
+                avatarColor: true,
                 createdAt: true
             }
         });
@@ -34,7 +37,7 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
     try {
         const userId = req.user.userId;
-        const { name, status, bio } = req.body;
+        const { name, status, bio, avatar, avatarColor } = req.body;
 
         // Validation
         if (status && status.length > 60) {
@@ -49,7 +52,9 @@ const updateProfile = async (req, res) => {
             data: {
                 name,
                 status,
-                bio
+                bio,
+                avatar,
+                avatarColor
             },
             select: {
                 id: true,
@@ -57,7 +62,8 @@ const updateProfile = async (req, res) => {
                 name: true,
                 status: true,
                 bio: true,
-                avatar: true
+                avatar: true,
+                avatarColor: true
             }
         });
 
@@ -65,6 +71,37 @@ const updateProfile = async (req, res) => {
     } catch (error) {
         console.error("Update Profile Error:", error);
         res.status(500).json({ error: "Failed to update profile" });
+    }
+};
+
+// Upload avatar image 
+const uploadAvatar = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+
+        const file = req.file;
+        const fileExtension = file.originalname.split('.').pop() || 'jpg';
+        const fileName = `avatars/${userId}-${crypto.randomUUID()}.${fileExtension}`;
+
+        await s3Client.send(new PutObjectCommand({
+            Bucket: BUCKET_NAME,
+            Key: fileName,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+        }));
+
+        // Public URL for the browser to access the image
+        const baseUrl = process.env.S3_PUBLIC_URL || process.env.S3_ENDPOINT || 'http://localhost:9000';
+        const publicUrl = `${baseUrl}/${BUCKET_NAME}/${fileName}`;
+
+        res.json({ publicUrl, fileName });
+    } catch (error) {
+        console.error("Upload Avatar Error:", error);
+        res.status(500).json({ error: "Failed to upload avatar" });
     }
 };
 
@@ -81,7 +118,8 @@ const getUserById = async (req, res) => {
                 name: true,
                 status: true,
                 bio: true,
-                avatar: true
+                avatar: true,
+                avatarColor: true
             }
         });
 
@@ -99,5 +137,6 @@ const getUserById = async (req, res) => {
 module.exports = {
     getProfile,
     updateProfile,
+    uploadAvatar,
     getUserById
 };

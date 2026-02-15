@@ -34,7 +34,6 @@ const NotificationsPanel: React.FC = () => {
 
     useEffect(() => {
         fetchRequests();
-        // Optional: Set up a polling interval or socket listener here later
     }, []);
 
     const handleRespond = async (requestId: number, status: 'ACCEPTED' | 'REJECTED') => {
@@ -48,7 +47,6 @@ const NotificationsPanel: React.FC = () => {
                 headers: { 'x-user-id': userId }
             });
 
-            // Remove the handled request from the list
             setRequests(prev => prev.filter(req => req.id !== requestId));
         } catch (error) {
             console.error("Failed to respond", error);

@@ -6,7 +6,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import NotificationsPanel from '../dashboard/NotificationsPanel';
 import EditProfileModal from '../profile/EditProfileModal';
 
-// Define props to allow passing user data when in Dashboard mode
 interface NavbarProps {
     userProfile?: {
         name: string;
@@ -14,6 +13,7 @@ interface NavbarProps {
         status: string;
         bio: string;
         avatar?: string;
+        avatarColor?: string;
     };
     onProfileUpdate?: (user: any) => void;
 }
@@ -31,7 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({ userProfile, onProfileUpdate }) 
         navigate(isLoggedIn ? '/dashboard' : '/auth');
     };
 
-    const currentUser = userProfile || { name: '', username: '', status: '', bio: '', avatar: null };
+    const currentUser = userProfile || { name: '', username: '', status: '', bio: '', avatar: '', avatarColor: '' };
 
     return (
         <>

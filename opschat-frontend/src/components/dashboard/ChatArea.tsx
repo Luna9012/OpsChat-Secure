@@ -28,6 +28,8 @@ interface Message {
     room?: string;
     author: string;
     userId?: number | string;
+    avatar?: string;        // Profile picture URL
+    avatarColor?: string;   // Fallback color class
     message: string;
     time: string;
     type?: 'text' | 'image' | 'file' | 'audio';
@@ -190,7 +192,7 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
             socket.off("load_history", handleLoadHistory);
             socket.off("error", handleError);
         }
-    }, [activeView.id, activeView.type, socket]); // Added activeView.type to dependencies
+    }, [activeView.id, activeView.type, socket]); 
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -529,11 +531,21 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
                                     <div key={index} className={`flex gap-4 ${isMe ? 'flex-row-reverse' : ''}`}>
                                         <div
                                             onClick={handleViewProfile}
-                                            className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold ${isMe
-                                                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
-                                                : 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 cursor-pointer hover:ring-2 hover:ring-[#b5f2a1]'
+                                            className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold overflow-hidden ${isMe
+                                                ? msg.avatar
+                                                    ? ''
+                                                    : 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                                                : msg.avatar
+                                                    ? 'cursor-pointer hover:ring-2 hover:ring-[#b5f2a1]'
+                                                    : `${msg.avatarColor || 'bg-blue-100 dark:bg-blue-900'} text-blue-600 dark:text-blue-300 cursor-pointer hover:ring-2 hover:ring-[#b5f2a1]`
                                                 }`}>
-                                            {isMe ? 'ME' : msg.author.substring(0, 2).toUpperCase()}
+                                            {msg.avatar ? (
+                                                <img src={msg.avatar} alt={msg.author} className="w-full h-full object-cover" />
+                                            ) : isMe ? (
+                                                'ME'
+                                            ) : (
+                                                msg.author.substring(0, 2).toUpperCase()
+                                            )}
                                         </div>
                                         <div className={`flex-1 space-y-2 ${isMe ? 'flex flex-col items-end' : ''}`}>
                                             <div className="flex items-center gap-2">

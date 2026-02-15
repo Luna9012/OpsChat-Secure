@@ -2,10 +2,10 @@ export interface User {
     id: string | number;
     username: string;
     name?: string;
-    status?: string; 
+    status?: string;
     bio?: string;
     avatar?: string;
-    avatarUrl?: string;
+    avatarColor?: string;
     role?: string;
 }
 
@@ -14,7 +14,9 @@ export interface Message {
     content: string;
     senderId: string;
     senderName: string;
-    createdAt: string; 
+    senderAvatar?: string;
+    senderAvatarColor?: string;
+    createdAt: string;
     channelId: string;
     type: 'text' | 'image' | 'voice' | 'system';
 }

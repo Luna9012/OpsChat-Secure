@@ -1,7 +1,7 @@
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
-  # Control Plane (The "Manager")
+  # Control Plane
   - role: control-plane
     kubeadmConfigPatches:
       - |
@@ -17,8 +17,8 @@ nodes:
         hostPort: 443
         protocol: TCP
 
-  # Worker Node (Where backend will run)
+  # Worker Node backend
   - role: worker
 
-  # Worker Node (Where frontend will run)
+  # Worker Node frontend
   - role: worker

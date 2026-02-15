@@ -42,7 +42,6 @@ export const Dashboard = () => {
                 setUserProfile(res.data);
             } catch (error) {
                 console.error("Failed to load profile", error);
-                // If 401, force logout
                 localStorage.clear();
                 navigate('/auth');
             }
@@ -52,7 +51,6 @@ export const Dashboard = () => {
     }, [navigate, refreshKey]);
 
     // 2. Fetch Workspace Data (Channels)
-    // For Phase 2, we assume Single Workspace (ID: 1) created by seed
     useEffect(() => {
         const fetchWorkspaceData = async () => {
             const userId = localStorage.getItem('userId');
