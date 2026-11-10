@@ -27,3 +27,6 @@ ProjectContext.md
 
 # Gemini/AI assistant files
 .gemini/
+
+# Environment secrets
+.env
